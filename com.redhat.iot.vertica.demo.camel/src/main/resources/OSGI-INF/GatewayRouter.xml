@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+    name="com.redhat.iot.vertica.demo.camel.GatewayRouter"
+	configuration-policy="require" enabled="true" immediate="true"
+    activate="activate" deactivate="deactivate" modified="modified">
+	<implementation class="com.redhat.iot.vertica.demo.camel.GatewayRouter"/>
+	<service>
+		<provide interface="com.redhat.iot.vertica.demo.camel.GatewayRouter"/>
+	</service>
+	<property name="service.pid" type="String" value="com.redhat.iot.vertica.demo.camel.GatewayRouter"/>
+</scr:component>
