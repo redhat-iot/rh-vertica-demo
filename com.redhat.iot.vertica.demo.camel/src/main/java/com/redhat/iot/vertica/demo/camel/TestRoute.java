@@ -45,7 +45,7 @@ public class TestRoute extends RouteBuilder {
                   }
                }
             })
-         .to("mock:Received");
+         .to("log:Received");
 
 
    }
