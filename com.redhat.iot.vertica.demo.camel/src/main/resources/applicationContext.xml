@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd   http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+		id="datasource" >
+		<property name="driverClassName" value="org.teiid.jdbc.TeiidDriver" />
+		<property name="url"
+			value="jdbc:teiid:rh_hpe_iot@mm://172.16.121.82:31000" />
+		<property name="username" value="teiidUser" />
+		<property name="password" value="Redhat1!" />
+	</bean>
+	
+
+</beans>
