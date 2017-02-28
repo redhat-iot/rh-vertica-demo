@@ -1,5 +1,8 @@
 package com.redhat.iot.vertica.demo.camel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
@@ -31,21 +34,26 @@ public class TestRoute extends RouteBuilder {
 */
 
       // Subscribe to topics, unmarshal Kura gzipped/protobuf messages
-      from("mqtt:consume?host=tcp://172.16.121.81:1883&userName=admin&password=admin&subscribeTopicName=Red-Hat/#/vertica-demo/data")
-         .unmarshal().gzip()
-         .unmarshal().protobuf("org.eclipse.kura.core.message.protobuf.KuraPayloadProto$KuraPayload")
-            .process(new Processor() {
-               @Override
-               public void process(Exchange exchange) throws Exception {
-                  KuraPayloadProto.KuraPayload kuraPayload = (KuraPayloadProto.KuraPayload) exchange.getIn().getBody();
-                  for (KuraPayloadProto.KuraPayload.KuraMetric kuraMetric : kuraPayload.getMetricList()) {
-                     String name = kuraMetric.getName();
-                     String value = kuraMetric.getStringValue();
-                     // Do something with the metric name/value here and then send it on
-                  }
-               }
-            })
-         .to("log:Received");
+	      from("mqtt:consume?host=tcp://172.16.121.81:1883&userName=admin&password=admin&subscribeTopicName=Red-Hat/#/vertica-demo/data")
+	         .unmarshal().gzip()
+	         .unmarshal().protobuf("org.eclipse.kura.core.message.protobuf.KuraPayloadProto$KuraPayload")
+	            .process(new Processor() {
+	               @Override
+	               public void process(Exchange exchange) throws Exception {
+	                  KuraPayloadProto.KuraPayload kuraPayload = (KuraPayloadProto.KuraPayload) exchange.getIn().getBody();
+	                  Map<String, String> insertMap = new HashMap<>();
+
+	                  for (KuraPayloadProto.KuraPayload.KuraMetric kuraMetric : kuraPayload.getMetricList()) {
+	                     String name = kuraMetric.getName();
+	                     String value = kuraMetric.getStringValue();
+	                     insertMap.put(name, value);
+	                  }
+	                  exchange.getIn().setBody(insertMap);
+	               }
+	            })
+	         .to("sql:insert into rhel_iot_demo.Partner80DB.rhel_iot_data.pmdata (id, cyclenumber, settings1, settings2, settings3, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21) " +
+	                  "values (:#id, :#cycle, :#settings1, :#settings2, :#settings3, :#s1, :#s2, :#s3, :#s4, :#s5, :#s6, :#s7, :#s8, :#s9, :#s10, :#s11, :#s12, :#s13, :#s14, :#s15, :#s16, :#s17, :#s18, :#s19, :#s20, :#s21)" +
+	                  "?dataSource=datasource");
 
 
    }
